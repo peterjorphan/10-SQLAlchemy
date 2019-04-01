@@ -11,7 +11,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
-engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite", connect_args={'check_same_thread':False})
 conn = engine.connect()
 Base = automap_base()
 Base.prepare(engine, reflect=True)
@@ -107,14 +107,14 @@ def start(start):
     print("Server received request for 'Start' page...")
     
     # Calculate the TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
-    return jsonify(start)
+    return jsonify(calc_temps(start, last_date))
 
 @app.route("/api/v1.0/<start>/<end>")
 def startend(start, end):
     print("Server received request for 'Start/End' page...")
 
     # Calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
-    return jsonify(start, end)
+    return jsonify(calc_temps(start, end))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
